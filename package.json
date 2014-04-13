@@ -1,0 +1,20 @@
+{ "name": "pf9-authproxy",
+  "version": "0.1.0",
+  "author": "Bich C. Le",
+  "contributors": [
+    { "name": "Bich C. Le", "email": "leb@platform9.net" }
+  ],
+  "description" : "A man-in-the-middle proxy that authenticates websockets traffic against Keystone",
+  "main" : "proxy",
+  "engines" : { "node": ">0.8.8" },
+  "keywords" : [ "filter", "proxy", "mitm", "http", "keystone" ],
+  "dependencies" : {
+    "nomnom" : ">=1.5.2",
+    "request" : ">=2.11.4",
+    "log4js": ">=0.6.13"
+  },
+  "repository" : {
+    "type": "git",
+    "url": "https://github.com/platform9/pf9-authproxy.git"
+  }
+}
