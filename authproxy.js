@@ -16,6 +16,7 @@ var numClients = 0;
 
 optionsParser.options({
     proxy_port: {abbr: 'p', full: 'proxy-port', help: 'Listening port', default: 8888},
+    proxy_interface: {abbr: 'i', full: 'proxy-interface', help: 'Listening host interface', default: '127.0.0.1'},
     server: {abbr: 's', full: 'server', help: 'Server to proxy to', default: 'localhost'},
     server_port: {abbr: 'P', full: 'server-port', help: 'Server port', default: 15674},
     ks_url: {abbr: 'k', full: 'ks-url', help: 'Keystone url', default: 'http://127.0.0.1:5000'},
@@ -40,7 +41,7 @@ log.info('proxy server '.blue + 'started '.green.bold + 'on port '.blue +
 
 var server = http.createServer();
 server.on('upgrade', handleUpgrade);
-server.listen(options.proxy_port);
+server.listen(options.proxy_port, options.proxy_interface);
 
 /**
  * Handles UPGRADE from plain HTTP to websocket protocol.
