@@ -13,7 +13,6 @@ to the specified destination server.
 The proxy also periodically re-authenticates the token to ensure it
 hasn't expired. If it has, then it closes the proxied connection.
 
-
 ## Usage ##
 
     Usage: /usr/bin/node authproxy.js [options]
