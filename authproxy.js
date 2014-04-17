@@ -52,10 +52,10 @@ server.listen(options.proxy_port, options.proxy_interface);
 function handleUpgrade(req, socket, head) {
     var hdrsStr, reqStr, srv;
 
-    log.info('Request:', req.url);
-    log.info('Head bytes:', head.length);
+    log.info('--- Incoming request:', req.url);
+    log.trace('Head bytes:', head.length);
     hdrsStr = JSON.stringify(req.headers, null, 4);
-    log.debug('Headers:', hdrsStr);
+    log.trace('Headers:', hdrsStr);
     numClients++;
     log.debug('Number of clients:', numClients);
     socket.on('close', onClientClose);
@@ -72,7 +72,7 @@ function handleUpgrade(req, socket, head) {
         return failRequest('401 Unauthorized');
     }
     var ksUrl = options.ks_url + '/v2.0/tokens/' + kv[1];
-    log.debug('Sending request to', ksUrl);
+    log.trace('Sending request to', ksUrl);
     var ksOptions = {
         url: ksUrl,
         headers: {'X-Auth-Token': options.ks_admintoken}
@@ -105,6 +105,7 @@ function handleUpgrade(req, socket, head) {
             return failRequest(ksStatus + ' Unauthorized');
         }
 
+        log.debug('Authentication successful.')
         // Authentication successful. Prepare to connect to destination server.
         var reqStr = req.method + ' ' + req.url + ' HTTP/' + req.httpVersion + '\r\n';
         Object.keys(req.headers).forEach(function (key) {
@@ -134,7 +135,7 @@ function handleUpgrade(req, socket, head) {
 
         // Called when connection to destination server is established
         function onServerConnect() {
-            log.debug('Connected to server.');
+            log.debug('Connected to destination server.');
             srv.write(reqStr, 'utf8');
             // Connect the sockets in both directions
             srv.pipe(socket).pipe(srv);

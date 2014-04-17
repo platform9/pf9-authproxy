@@ -1,0 +1,15 @@
+#!/bin/sh
+# Copyright (c) 2014 Platform9 Systems Inc.
+
+# This script enables and starts the pf9-authproxy service.
+
+# Failfast
+# Fail on first error
+set -e
+# Fail on uninitialized variables
+set -u
+
+echo "authproxy customization script called"
+
+/sbin/chkconfig --level 345 pf9-authproxy on
+/sbin/service pf9-authproxy start
