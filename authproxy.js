@@ -66,12 +66,14 @@ function handleUpgrade(req, socket, head) {
         return failRequest('401 Unauthorized');
     }
 
-    var kv = cookie.trim().split('=');
-    if (kv.length !== 2 || kv[0] != 'authToken' || !kv[1]) {
+    cookie = cookie.trim();
+    var sep = cookie.indexOf('=');
+    if (sep < 0 || cookie.substring(0, sep) != 'authToken') {
         log.error('Malformed cookie');
         return failRequest('401 Unauthorized');
     }
-    var ksUrl = options.ks_url + '/v2.0/tokens/' + kv[1];
+    var token = cookie.substring(sep + 1);
+    var ksUrl = options.ks_url + '/v2.0/tokens/' + token;
     log.trace('Sending request to', ksUrl);
     var ksOptions = {
         url: ksUrl,
