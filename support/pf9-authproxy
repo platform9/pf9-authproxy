@@ -12,7 +12,7 @@
 # read & export proxy information
 . /etc/environment
 
-prog="authproxy.js"
+prog="pf9-authproxy.js"
 svcname="pf9-authproxy"
 
 SERVER_BIN="/opt/pf9/authproxy/$prog"

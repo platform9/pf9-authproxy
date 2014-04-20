@@ -25,6 +25,10 @@ ${AUTHPROXY_RPM}: ${SPEC_FILE}
 	echo "RPM_DIR: $(RPM_DIR)"
 	rpmbuild -bb --define "_topdir $(RPM_DIR)" --define "_src_dir $(SRC_DIR)" ${SPEC_FILE}
 
+unit-test:
+	cd $(TOP_DIR)/test; \
+	./test_authproxy.js -t 6473635 -k http://127.0.0.1:5001 -l INFO
+
 rpm: ${AUTHPROXY_RPM}
 
 clean:
