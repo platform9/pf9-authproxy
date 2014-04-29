@@ -36,7 +36,7 @@ nextTest();
  */
 function nextTest() {
     var test, headers, httpOptions, cookieName, cookieVal, cookieFormatStr;
-    var httpOptions, httpClient;
+    var httpOptions, httpClient, cookieStr;
 
     test = testData[curTest];
     console.log('\nStarting test:', test.name);
@@ -57,11 +57,11 @@ function nextTest() {
         'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_6_8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.116 Safari/537.36'
     };
 
-    if (!test.noCookie) {
-        cookieName = test.cookieName || 'authToken';
-        cookieVal = test.cookieVal || authToken;
-        cookieFormatStr = test.cookieFormatStr || '%s=%s';
-        headers.cookie = util.format(cookieFormatStr, cookieName, cookieVal);
+    if (test.cookieStr) {
+        cookieStr = test.cookieStr.replace(/__ENCODED_AUTH_TOKEN__/g,
+                                           encodeURIComponent(authToken));
+        cookieStr = cookieStr.replace(/__UNENCODED_AUTH_TOKEN__/g, authToken);
+        headers.cookie = cookieStr;
     }
 
     httpOptions = {

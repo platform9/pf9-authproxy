@@ -11,5 +11,4 @@ set -u
 
 echo "authproxy customization script called"
 
-/sbin/chkconfig --level 345 pf9-authproxy on
 /sbin/service pf9-authproxy start

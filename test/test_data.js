@@ -5,34 +5,48 @@
 module.exports = [
     {
         name: 'no cookie',
-        noCookie: true,
         status: 401 // unauthorized
     },
     {
         name: 'bad cookie name',
-        cookieName: 'foo',
-        status: 400 // bad request
+        cookieStr: 'foo=bar',
+        status: 401 // bad request
     },
     {
         name: 'keystone not running',
+        cookieStr: 'authToken=__ENCODED_AUTH_TOKEN__',
         status: 503 // service unavailable
     },
     {
         name: 'bad cookie value',
         startKeystone: true,
-        cookieVal: '4472594523',
+        cookieStr: 'authToken=4472594523',
         status: 401 // unauthorized
     },
     {
         name: 'destination server not running',
+        cookieStr: 'authToken=__ENCODED_AUTH_TOKEN__',
         expectConnectionError: true
     },
     {
-        name: 'token with spaces',
-        cookieFormatStr: '%s=%s ',
+        name: 'multiple cookies and spaces',
+        cookieStr: ' foo=bar;  authToken=__ENCODED_AUTH_TOKEN__; xx=yy',
         startDestinationServer: true
     },
     {
-        name: 'final test, have a nice day!'
+        name: 'trailing semicolon',
+        cookieStr: 'authToken=__ENCODED_AUTH_TOKEN__; xx=yy;'
+    },
+    {
+        name: 'unencoded token',
+        cookieStr: 'foo=bar; authToken=__UNENCODED_AUTH_TOKEN__; xx=yy'
+    },
+    {
+        name: 'unencoded token (2)',
+        cookieStr: 'authToken=__UNENCODED_AUTH_TOKEN__'
+    },
+    {
+        name: 'final test, have a nice day!',
+        cookieStr: 'authToken=__ENCODED_AUTH_TOKEN__; xx=yy'
     }
 ];
