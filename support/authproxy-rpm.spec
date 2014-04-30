@@ -11,6 +11,7 @@ AutoReqProv:    no
 Provides:       pf9-authproxy
 Requires:       nodejs
 Requires:       nodejs-request
+Requires:       nodejs-cookie
 Requires:       openstack-keystone
 
 BuildArch:      noarch
@@ -44,8 +45,13 @@ rm -rf ${RPM_BUILD_ROOT}
 /etc/init.d/pf9-authproxy
 
 %post
-
+/sbin/chkconfig --add pf9-authproxy
 %preun
+if [ "$1" = 0 ]
+then
+	/sbin/service pf9-authproxy stop > /dev/null 2>&1 || :
+	/sbin/chkconfig --del pf9-authproxy
+fi
 
 %postun
 

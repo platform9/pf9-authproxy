@@ -10,6 +10,7 @@ var log4js = require('log4js');
 var optionsParser = require('nomnom');
 var Buffer = require('buffer');
 var net = require('net');
+var cookieParser = require('cookie');
 var numClients = 0;
 
 /**
@@ -67,19 +68,19 @@ exports.start = function start(options) {
         log.debug('Number of clients:', numClients);
         socket.on('close', onClientClose);
 
-        var cookie = req.headers.cookie;
-        if (!cookie) {
+        var cookieStr = req.headers.cookie;
+        if (!cookieStr) {
+            log.error('Missing cookie header');
+            return failRequest('401 Unauthorized');
+        }
+
+        var cookies = cookieParser.parse(cookieStr);
+        var token = cookies['authToken'];
+        if (!token) {
             log.error('Missing cookie');
             return failRequest('401 Unauthorized');
         }
 
-        cookie = cookie.trim();
-        var sep = cookie.indexOf('=');
-        if (sep < 0 || cookie.substring(0, sep) != 'authToken') {
-            log.error('Malformed cookie');
-            return failRequest('400 Bad Request');
-        }
-        var token = cookie.substring(sep + 1);
         var ksUrl = options.ks_url + '/v2.0/tokens/' + token;
         log.trace('Sending request to', ksUrl);
         var ksOptions = {
