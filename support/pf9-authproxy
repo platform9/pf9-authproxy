@@ -20,7 +20,9 @@ svcname="pf9-authproxy"
 
 SERVER_BIN="/opt/pf9/authproxy/$prog"
 KEYSTONE_FILE="/etc/keystone/keystone.conf"
-SERVER_LOGFILE=/var/log/pf9-authproxy.log
+SERVER_LOGDIR=/var/log/pf9/authproxy
+SERVER_LOGFILE=$SERVER_LOGDIR/authproxy.log
+SERVER_STDOUT=$SERVER_LOGDIR/authproxy-stdout.log
 
 # Source function library.
 . /etc/init.d/functions
@@ -49,14 +51,14 @@ start() {
             echo -n "Failed to extract keystone token"
             exit 1
         fi
-        SERVER_OPTS="-t $token"
+        SERVER_OPTS="-t $token -L $SERVER_LOGFILE"
 
 	echo -n $"Starting $svcname: "
-        touch "$SERVER_LOGFILE"
-        chown pf9 "$SERVER_LOGFILE"
+        mkdir -p "$SERVER_LOGDIR"
+        chown pf9 "$SERVER_LOGDIR"
 
 	# Run process as pf9 user
-        su -c "$SERVER_BIN $SERVER_OPTS >> $SERVER_LOGFILE 2>&1 &" pf9
+        su -c "$SERVER_BIN $SERVER_OPTS >> $SERVER_STDOUT 2>&1 &" pf9
 	RETVAL=$?
 	echo
 	if [ $RETVAL -eq 0 ] ; then

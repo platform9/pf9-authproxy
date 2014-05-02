@@ -27,7 +27,8 @@ exports.getOptionsParser = function getOptionsParser() {
         ks_admintoken: {abbr: 't', full: 'ks-admintoken', help: 'Keystone admin token', required: true},
         reauth_interval: {abbr: 'r', full: 'reauthenticate-interval', help: 'Re-authenticate interval in seconds', default: 10},
         log_level: {abbr: 'l', full: 'log-level', help: "Log level", default: 'DEBUG'},
-        log_file: {abbr: 'L', help: 'Log file', full: 'log-file' }
+        log_file: {abbr: 'L', help: 'Log file', full: 'log-file' },
+        test_logging: {full: 'test-logging', help: 'Periodically log dummy messages', flag:true, default: false}
     });
 }
 
@@ -37,15 +38,19 @@ exports.getOptionsParser = function getOptionsParser() {
  */
 exports.start = function start(options) {
     if (options.log_file) {
-        log4js.clearAppenders();
-        log4js.loadAppender('file');
-        log4js.addAppender(log4js.appenders.file(options.log_file), 'authproxy');
+        // TODO: configure maxLogSize and backups from a JSON file
+        log4js.configure({appenders: [
+            {type: 'file', filename: options.log_file, maxLogSize: 2097152,
+             backups: 4, category: 'authproxy'}
+        ]});
     }
 
-    var log = log4js.getLogger('proxy');
+    var log = log4js.getLogger('authproxy');
     log.setLevel(options.log_level);
-    log.info('proxy server '.blue + 'started '.green.bold + 'on port '.blue +
-        (''+options.proxy_port).yellow);
+    var initialMsg = 'pf9 authproxy '.blue + 'started '.green.bold +
+        'on port '.blue + (''+options.proxy_port).yellow + ' at ' + new Date();
+    console.log(initialMsg);
+    log.info(initialMsg);
 
     var server = http.createServer();
     server.on('upgrade', handleUpgrade);
@@ -186,6 +191,15 @@ exports.start = function start(options) {
                 }
             }
         }
+    }
+
+    if (options.test_logging) {
+        setInterval(function () {
+            log.info('Dummy log message 1');
+        }, 500);
+        setInterval(function () {
+            log.info('Dummy log message 2');
+        }, 1000);
     }
 }
 
