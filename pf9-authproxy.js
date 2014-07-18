@@ -1,7 +1,7 @@
 #!/usr/bin/node
 
 /**
- * Copyright (c) 2014 Platform Systems, Inc.
+ * Copyright (c) 2014 Platform9 Systems, Inc.
  */
 
 'use strict';
