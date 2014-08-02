@@ -1,0 +1,33 @@
+{
+  "log": {
+    "logPath": "/var/log/pf9-http-proxy/pf9-http-proxy.log",
+    "logLevel": "info"
+  },
+  "global": {
+    "path": "/etc/pf9/global.conf"
+  },
+  "events": {
+    "logTarget": "mixpanel",
+    "mixpanelProjectToken": "91ab0c153f5127466c2e04229e60b3a4",
+    "outputFilePath": "/var/log/pf9-http-proxy/events.json"
+  },
+  "default": {
+    "port": "9637"
+  },
+  "keystone": {
+    "url": "http://127.0.0.1:5000"
+  },
+  "nova": {
+    "url": "http://127.0.0.1:8774"
+  },
+  "resmgr": {
+    "url": "http://127.0.0.1:8083"
+  },
+  "glance": {
+    "url": "http://127.0.0.1:9292"
+  },
+  "test": {
+    "testData": "/source/pf9-authproxy/pf9-http-proxy/test/testData.js",
+    "serverOn": "0"
+  }
+}
