@@ -1,0 +1,18 @@
+{
+    "name": "pf9-http-proxy",
+    "description": "Package containing list of all dependencies",
+    "author": "Pf9",
+    "dependencies": {
+        "log4js": "0.6.x",
+        "fs-extra": "0.10.x",
+        "ini": "1.2.x",
+        "mixpanel": "0.0.x",
+        "crypto": "0.0.x",
+        "moment": "2.7.x",
+        "events": "1.0.x",
+        "nconf": "0.6.x",
+        "assert": "1.1.x",
+        "request": "2.39.x",
+        "stdio": "0.1.X"
+    }
+}

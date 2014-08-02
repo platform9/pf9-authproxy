@@ -1,0 +1,105 @@
+#! /bin/sh
+#
+# chkconfig: 345 99 01
+# description: This service runs a proxy server to log some events into mixpanel
+#
+### BEGIN INIT INFO
+# Provides: pf9-http-proxy
+# Required-Start: $network
+# Required-Stop: $network
+# Default-Start: 3 5
+# Default-Stop: 0 1 2 6
+# Description: This service runs a proxy server to log some events into mixpanel
+### END INIT INFO
+
+# read & export proxy information
+. /etc/environment
+
+prog="pf9-http-proxy.js"
+svcname="pf9-http-proxy"
+
+SERVER_BIN="/opt/pf9/pf9httpproxy/$prog"
+SERVER_LOGDIR=/var/log/pf9-http-proxy
+SERVER_LOGFILE=$SERVER_LOGDIR/pf9-http-proxy.log
+SERVER_STDOUT=$SERVER_LOGDIR/pf9-http-proxy-stdout.log
+
+# Source function library.
+. /etc/init.d/functions
+
+RETVAL=0
+uid=`id | cut -d\( -f1 | cut -d= -f2`
+
+start() {
+
+    [ -f $SERVER_BIN ] || exit 5
+
+    # Make sure the pf9-authproxy is not already running.
+    if status $prog > /dev/null ; then
+        exit 0
+    fi
+
+    # Only root can start the service
+    [ $uid -ne 0 ] && exit 4
+
+    echo -n $"Starting $svcname: "
+    mkdir -p "$SERVER_LOGDIR"
+    chown pf9 "$SERVER_LOGDIR"
+
+    # Run process as pf9 user
+    su -c "$SERVER_BIN >> $SERVER_STDOUT 2>&1 &" pf9
+    RETVAL=$?
+    echo
+    if [ $RETVAL -eq 0 ] ; then
+        touch /var/lock/subsys/$svcname
+        [ ! -f /var/run/pf9-http-proxy.pid ] &&
+        /sbin/pidof $prog > /var/run/pf9-http-proxy.pid
+    fi
+    return $RETVAL
+}
+
+
+stop() {
+    echo -n $"Stopping $svcname: "
+    killproc $prog
+    RETVAL=$?
+    echo
+    [ $RETVAL -eq 0 ] && {
+        rm -f /var/lock/subsys/$svcname
+        rm -f /var/run/pf9-http-proxy*
+    }
+    return $RETVAL
+}
+
+# See how we were called.
+case "$1" in
+    start)
+        start
+        RETVAL=$?
+        ;;
+    stop)
+        stop
+        RETVAL=$?
+        ;;
+    status)
+        status $prog
+        RETVAL=$?
+        ;;
+    restart | reload| force-reload)
+        stop
+        start
+        RETVAL=$?
+        ;;
+    condrestart | try-restart)
+        if [ -f /var/lock/subsys/$svcname ]; then
+            stop
+            start -w
+            RETVAL=$?
+        fi
+        ;;
+    *)
+        echo $"Usage: $0 {start|stop|status|restart|reload|force-reload|condrestart|try-restart}"
+        RETVAL=2
+        ;;
+esac
+
+exit $RETVAL
