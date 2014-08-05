@@ -7,7 +7,7 @@ var moment = require('moment');
 var logger = require('../log.js');
 var logManager = require('../logManager.js');
 var cfg = require('../configParser.js');
-var request = require('request');
+var requestHandler = require('./requestHandler.js');
 
 var keystoneTarget = cfg.get('keystone:url');
 
@@ -32,22 +32,8 @@ function start(req, res) {
 
     req.on('end', function() {
 
-        var httpClient;
         var data = Buffer.concat(dataArray);
-        if (req.method == 'POST') {
-            httpClient = request({
-                method: req.method,
-                headers: req.headers,
-                uri: url,
-                body: data
-            }, onResponse);
-        } else {
-            httpClient = request({
-                method: req.method,
-                headers: req.headers,
-                uri: url
-            }, onResponse);
-        }
+        requestHandler.forwardRequest(req, data, url, onResponse);
 
         function onResponse (error, response, body) {
             if (!error) {
@@ -71,12 +57,8 @@ function start(req, res) {
                 } catch (e) {
                     logger.error(e.stack);
                 }
-                res.writeHead(response.statusCode, response.headers);
-                res.write(body);
-            } else {
-                res.writeHead(503);
             }
-            res.end();
+            requestHandler.finishResponse(error, response, body, res);
         }
     });
 }

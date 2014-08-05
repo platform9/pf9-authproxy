@@ -7,7 +7,7 @@ var moment = require('moment');
 var logger = require('../log.js');
 var logManager = require('../logManager.js');
 var cfg = require('../configParser.js');
-var request = require('request');
+var requestHandler = require('./requestHandler.js');
 
 var resmgrTarget = cfg.get('resmgr:url');
 
@@ -32,33 +32,11 @@ function start(req, res) {
 
     req.on('end', function() {
 
-        var httpClient;
-        data = Buffer.concat(dataArray);
-        if (req.method == 'POST') {
-            httpClient = request({
-                method: req.method,
-                headers: req.headers,
-                uri: url,
-                body: data
-            }, onResponse);
-        } else {
-            httpClient = request({
-                method: req.method,
-                headers: req.headers,
-                uri: url
-            }, onResponse);
-        }
+        var data = Buffer.concat(dataArray);
+        requestHandler.forwardRequest(req, data, url, onResponse);
 
         function onResponse(error, response, body) {
-            if (!error) {
-                res.writeHead(response.statusCode, response.headers);
-                if(body) {
-                    res.write(body);
-                }
-            } else {
-                res.writeHead(503);
-            }
-            res.end();
+            requestHandler.finishResponse(error, response, body, res);
         }
 
         if (req.url.indexOf("/roles/pf9-ostackhost") > -1 || req.method == "DELETE") {

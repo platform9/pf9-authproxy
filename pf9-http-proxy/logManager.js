@@ -55,10 +55,17 @@ function mixpanelLogEvent(eventDetails) {
             Type_of_User : eventDetails.typeofUser,
             Timestamp : eventDetails.timestamp,
             Instance_Hash : eventDetails.instanceHash
-        });
+        }, mixpanelCallback);
+
         logger.debug("Event " + JSON.stringify(eventDetails) + " successfully logged into mixpanel");
     } catch (e) {
         logger.error(e.stack);
+    }
+
+    function mixpanelCallback(e) {
+        if (e) {
+            logger.info(e);
+        }
     }
 }
 
