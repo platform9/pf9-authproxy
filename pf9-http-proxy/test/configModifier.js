@@ -29,7 +29,7 @@ function configure() {
     nconf.set('events:mixpanelProjectToken', ops.mixpanelToken || '91ab0c153f5127466c2e04229e60b3a4');
     nconf.set('events:outputFilePath', ops.filePath || '/var/log/pf9-http-proxy/events.json');
     nconf.set('default:port', ops.port || '9637');
-    nconf.set('test:testData', ops.testData || '/source/pf9-authproxy/pf9-http-proxy/test/testData.js');
+    nconf.set('test:testData', ops.testData || '/code/pf9-authproxy/pf9-http-proxy/test/testData.js');
     nconf.set('keystone:url', ops.keystoneUrl || 'http://127.0.0.1:5000');
     nconf.set('nova:url', ops.novaUrl || 'http://127.0.0.1:8774');
     nconf.set('glance:url', ops.glanceUrl || 'http://127.0.0.1:9292');

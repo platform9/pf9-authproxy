@@ -14,19 +14,23 @@ var request = require('request');
 
 function forwardRequest(req, data, url, onResponse) {
 
-    if (req.method == 'POST') {
-        request( {
-            method: req.method,
-            headers: req.headers,
-            uri: url,
-            body: data
-        }, onResponse);
-    } else {
-        request({
-            method: req.method,
-            headers: req.headers,
-            uri: url
-        }, onResponse);
+    try {
+        if (req.method == 'POST' && data.length > 0) {
+            request( {
+                method: req.method,
+                headers: req.headers,
+                uri: url,
+                body: data
+            }, onResponse);
+        } else {
+            request({
+                method: req.method,
+                headers: req.headers,
+                uri: url
+            }, onResponse);
+        }
+    } catch(e) {
+        logger.error(e.stack);
     }
 }
 

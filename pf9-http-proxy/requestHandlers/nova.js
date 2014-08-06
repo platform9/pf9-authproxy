@@ -22,18 +22,21 @@ function start(req, res) {
     logger.info("Incoming request : %s", req.url);
     logger.debug("Headers : ", req.headers);
 
-    var now = moment();
     var url = novaTarget + req.url;
     var dataArray = [];
 
     req.on('data', function(chunk) {
-            dataArray.push(chunk);
+        dataArray.push(chunk);
     });
 
     req.on('end', function() {
 
-        var data = Buffer.concat(dataArray);
-        requestHandler.forwardRequest(req, data, url, onResponse);
+        try {
+            var data = Buffer.concat(dataArray);
+            requestHandler.forwardRequest(req, data, url, onResponse);
+        } catch (e) {
+            logger.error(e.stack);
+        }
 
         function onResponse(error, response, body) {
             requestHandler.finishResponse(error, response, body, res);
@@ -53,6 +56,7 @@ function start(req, res) {
                     }
 
                     var splitUrl = req.url.split("/");
+                    var now = moment();
 
                     var eventDetails = {
                         eventType: eventType,

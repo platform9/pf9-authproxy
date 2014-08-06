@@ -10,6 +10,7 @@ var glanceTarget = cfg.get('glance:url')
 
 /**
  * passes the request to glance server
+ * No event is logged for it now, but can be used for logging events in future.
  * @param {http.IncomingMessage} request - the incoming HTTP request
  * @param {http.ServerResponse} response - the outgoing HTTP response
  */
@@ -23,7 +24,7 @@ function start(req, res) {
     var dataArray = [];
 
     req.on('data', function(chunk) {
-            dataArray.push(chunk);
+        dataArray.push(chunk);
     });
 
     req.on('end', function() {

@@ -22,7 +22,6 @@ function start(req, res) {
     logger.info("Incoming request : %s", req.url);
     logger.debug("Headers : ", req.headers);
 
-    var now = moment();
     var url = keystoneTarget + req.url;
     var dataArray = [];
 
@@ -41,6 +40,7 @@ function start(req, res) {
                     var obj = JSON.parse(body);
                     if (obj != null) {
                         if ('access' in obj) {
+                            var now = moment();
                             var eventDetails = {
                                 eventType: "Session Start",
                                 username: obj.access.user.username,

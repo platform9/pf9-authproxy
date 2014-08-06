@@ -22,7 +22,6 @@ function start(req, res) {
     logger.info("Incoming request : %s", req.url);
     logger.debug("Headers : ", req.headers);
 
-    var now = moment();
     var url = resmgrTarget + req.url;
     var dataArray = [];
 
@@ -39,16 +38,19 @@ function start(req, res) {
             requestHandler.finishResponse(error, response, body, res);
         }
 
-        if (req.url.indexOf("/roles/pf9-ostackhost") > -1 || req.method == "DELETE") {
+        if (req.method == "PUT" || req.method == "DELETE") {
             try {
                 var eventType;
-                if (req.url.indexOf("/roles/pf9-ostackhost") > -1){
-                    eventType = "Host Addition";
-                } else if (req.method == 'DELETE') {
+                if ((req.url.indexOf("/roles/pf9-ostackhost") > -1 || req.url.indexOf("/roles/pf9-imagelibrary") > -1) && req.method == "PUT"){
+                    eventType = "Role Authorization/Upgrade";
+                } else if ((req.url.indexOf("/roles/pf9-ostackhost") > -1 || req.url.indexOf("/roles/pf9-imagelibrary") > -1) && req.method == "DELETE"){
+                    eventType = "Role Deletion";
+                } else if (req.url.indexOf("v1/hosts") > -1 && req.method == 'DELETE') {
                     eventType = "Host Removal";
                 }
 
                 var splitUrl = req.url.split("/");
+                var now = moment();
 
                 var eventDetails = {
                     eventType: eventType,

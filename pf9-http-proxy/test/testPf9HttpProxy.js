@@ -56,11 +56,6 @@ function nextTest() {
         }, onHttpResponse);
     }
 
-    httpClient.on('error', function() {
-        console.log("http client error");
-        finishTest();
-    });
-
     function onHttpResponse(error, response, body) {
         setTimeout(function() {
             if (!error) {
@@ -85,6 +80,7 @@ function nextTest() {
                 }
             } else {
                 console.log(error.stack);
+                finishTest();
             }
         }, 2000);
     }
