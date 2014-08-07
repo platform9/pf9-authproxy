@@ -54,7 +54,8 @@ function mixpanelLogEvent(eventDetails) {
             Session_Hash : eventDetails.sessionHash,
             Type_of_User : eventDetails.typeofUser,
             Timestamp : eventDetails.timestamp,
-            Instance_Hash : eventDetails.instanceHash
+            Instance_Hash : eventDetails.instanceHash,
+            Role_Name: eventDetails.roleName
         }, mixpanelCallback);
 
         logger.debug("Event " + JSON.stringify(eventDetails) + " successfully logged into mixpanel");

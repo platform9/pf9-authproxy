@@ -47,7 +47,8 @@ function start(req, res) {
                                 sessionHash: crypto.createHash('md5').update(obj.access.token.id).digest("hex"),
                                 timestamp: now.format('YYYY-MM-DD HH:mm:ss Z'),
                                 typeofUser: obj.access.metadata.is_admin? 'admin' : 'member',
-                                instanceHash: "-"
+                                instanceHash: "-",
+                                roleName: "-"
                             }
 
                             logManager.logEvent(eventDetails);

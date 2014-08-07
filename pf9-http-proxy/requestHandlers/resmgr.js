@@ -40,11 +40,13 @@ function start(req, res) {
 
         if (req.method == "PUT" || req.method == "DELETE") {
             try {
-                var eventType;
-                if ((req.url.indexOf("/roles/pf9-ostackhost") > -1 || req.url.indexOf("/roles/pf9-imagelibrary") > -1) && req.method == "PUT"){
-                    eventType = "Role Authorization/Upgrade";
-                } else if ((req.url.indexOf("/roles/pf9-ostackhost") > -1 || req.url.indexOf("/roles/pf9-imagelibrary") > -1) && req.method == "DELETE"){
-                    eventType = "Role Deletion";
+                var eventType = "-";
+                if (req.url.indexOf("/roles/") > -1) {
+                    if (req.method == "PUT") {
+                        eventType = "Role Authorization/Upgrade";
+                    } else if (req.method == "DELETE") {
+                        eventType = "Role Deletion";
+                    }
                 } else if (req.url.indexOf("v1/hosts") > -1 && req.method == 'DELETE') {
                     eventType = "Host Removal";
                 }
@@ -52,13 +54,20 @@ function start(req, res) {
                 var splitUrl = req.url.split("/");
                 var now = moment();
 
+                if (splitUrl.length >= 5) {
+                    var roleName = splitUrl[5];
+                } else {
+                    var roleName = "-";
+                }
+
                 var eventDetails = {
                     eventType: eventType,
                     username: "-",
                     sessionHash: crypto.createHash('md5').update(req.headers["x-auth-token"]).digest("hex"),
                     timestamp: now.format('YYYY-MM-DD HH:mm:ss Z'),
                     typeofUser: "-",
-                    instanceHash: crypto.createHash('md5').update(splitUrl[3]).digest("hex")
+                    instanceHash: crypto.createHash('md5').update(splitUrl[3]).digest("hex"),
+                    roleName: roleName
                 }
 
                 logManager.logEvent(eventDetails);

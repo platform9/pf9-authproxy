@@ -64,7 +64,8 @@ function start(req, res) {
                         sessionHash: crypto.createHash('md5').update(req.headers["x-auth-token"]).digest("hex"),
                         timestamp: now.format('YYYY-MM-DD HH:mm:ss Z'),
                         typeofUser: "-",
-                        instanceHash: crypto.createHash('md5').update(splitUrl[4]).digest("hex")
+                        instanceHash: crypto.createHash('md5').update(splitUrl[4]).digest("hex"),
+                        roleName: "-"
                     }
 
                     logManager.logEvent(eventDetails);

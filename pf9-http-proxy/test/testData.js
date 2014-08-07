@@ -12,7 +12,7 @@ module.exports = [
     },
     {
         method: 'PUT',
-        name: 'Host Addition event test',
+        name: 'Role Authorization/Upgrade event test',
         statusCode: 200,
         eventType: 'Role Authorization/Upgrade',
         url: 'http://localhost:9637/resmgr/v1/hosts/2f1467b7-f2bd-429e-b2b7-f472b197cdf8/roles/pf9-ostackhost',
